@@ -186,6 +186,7 @@ Future _writeKeys(StringBuffer classBuilder, List<FileSystemEntity> files,
 
   var file = '''
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
+export 'package:easy_localization/easy_localization.dart' hide Intl;
 
 abstract class $className {
 ''';
