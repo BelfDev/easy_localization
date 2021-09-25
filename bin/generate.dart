@@ -152,7 +152,7 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
 
   var classBuilder = StringBuffer();
 
-  printInfo('➡️ Generating class...\n');
+  printInfo('🧠 Generating class...\n');
   switch (options.format) {
     case 'json':
       await _writeJson(classBuilder, files);
@@ -171,7 +171,7 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
   classBuilder.writeln('}');
   generatedFile.writeAsStringSync(classBuilder.toString());
 
-  printInfo('➡️ Formatting file...\n');
+  printInfo('📰 Formatting file...\n');
   await Process.run('flutter', [
     'format',
     outputPath.path,
