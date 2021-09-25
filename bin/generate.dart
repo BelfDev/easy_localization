@@ -227,7 +227,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
 
         fileContent += '  static const $formattedAccKey = \'$accKey.$key\';\n';
       } else if (!ignoreKey) {
-        fileContent += '  static const $key = \'$key\';\n';
+        fileContent += '  static const ${key.toCamelCase} = \'$key\';\n';
       }
     }
   }
