@@ -232,7 +232,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
     }
   }
 
-  return fileContent;
+  return fileContent.trim();
 }
 
 Future _writeJson(
