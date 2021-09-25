@@ -214,7 +214,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
 
       var nextAccKey = key;
       if (accKey != null) {
-        nextAccKey = '$accKey.$key';
+        nextAccKey = '$accKey.$key'.toCamelCase;
       }
 
       fileContent +=
@@ -222,12 +222,13 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
     }
 
     if (!_preservedKeywords.contains(key)) {
-      accKey != null && !ignoreKey
-          ? fileContent +=
-              '  static const ${accKey.toCamelCase}\_$key = \'$accKey.$key\';\n'
-          : !ignoreKey
-              ? fileContent += '  static const $key = \'$key\';\n'
-              : null;
+      if (accKey != null && !ignoreKey) {
+        final formattedAccKey = '$accKey.$key'.toCamelCase;
+
+        fileContent += '  static const $formattedAccKey = \'$accKey.$key\';\n';
+      } else if (!ignoreKey) {
+        fileContent += '  static const $key = \'$key\';\n';
+      }
     }
   }
 
