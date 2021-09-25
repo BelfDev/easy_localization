@@ -152,6 +152,7 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
 
   var classBuilder = StringBuffer();
 
+  printInfo('➡️ Generating class...\n');
   switch (options.format) {
     case 'json':
       await _writeJson(classBuilder, files);
@@ -170,7 +171,13 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
   classBuilder.writeln('}');
   generatedFile.writeAsStringSync(classBuilder.toString());
 
-  printInfo('All done! File generated in ${outputPath.path}');
+  printInfo('➡️ Formatting file...\n');
+  await Process.run('flutter', [
+    'format',
+    outputPath.path,
+  ]);
+
+  printInfo('🙌️ All done! File generated in ${outputPath.path}');
 }
 
 Future _writeKeys(StringBuffer classBuilder, List<FileSystemEntity> files,
@@ -232,7 +239,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
     }
   }
 
-  return fileContent.replaceAll(r'[\n\r]$', '');
+  return fileContent;
 }
 
 Future _writeJson(
