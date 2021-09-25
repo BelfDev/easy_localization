@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types
+// ignore_for_file: omit_local_variable_types, unused_element
 
 import 'dart:async';
 import 'dart:convert';
@@ -224,7 +224,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
     if (!_preservedKeywords.contains(key)) {
       accKey != null && !ignoreKey
           ? fileContent +=
-              '  static const ${accKey.replaceAll('.', '_')}\_$key = \'$accKey.$key\';\n'
+              '  static const ${accKey.toCamelCase}\_$key = \'$accKey.$key\';\n'
           : !ignoreKey
               ? fileContent += '  static const $key = \'$key\';\n'
               : null;
