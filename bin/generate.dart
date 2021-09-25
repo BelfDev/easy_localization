@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -155,7 +157,8 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
       await _writeJson(classBuilder, files);
       break;
     case 'keys':
-      await _writeKeys(classBuilder, files, options.skipUnnecessaryKeys);
+      await _writeKeys(
+          classBuilder, files, options.skipUnnecessaryKeys, options.outputFile);
       break;
     // case 'csv':
     //   await _writeCsv(classBuilder, files);
@@ -171,11 +174,13 @@ void generateFile(List<FileSystemEntity> files, Directory outputPath,
 }
 
 Future _writeKeys(StringBuffer classBuilder, List<FileSystemEntity> files,
-    bool? skipUnnecessaryKeys) async {
+    bool? skipUnnecessaryKeys, String? outputFile) async {
+  final className = outputFile?.split('.').first.toPascalCase ?? 'LocaleKeys';
+
   var file = '''
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class  LocaleKeys {
+abstract class $className {
 ''';
 
   final fileData = File(files.first.path);
@@ -295,4 +300,144 @@ void printInfo(String info) {
 
 void printError(String error) {
   print('\u001b[31m[ERROR] easy localization: $error\u001b[0m');
+}
+
+// Adapted from https://github.com/techniboogie-dart/recase/blob/master/lib/recase.dart
+
+/// An instance of text to be re-cased.
+class _ReCase {
+  _ReCase(String text) {
+    originalText = text;
+    _words = _groupIntoWords(text);
+  }
+
+  final RegExp _upperAlphaRegex = RegExp(r'[A-Z]');
+
+  final symbolSet = {' ', '.', '/', '_', r'\', '-'};
+
+  late String originalText;
+  late List<String> _words;
+
+  List<String> _groupIntoWords(String text) {
+    final StringBuffer sb = StringBuffer();
+    final List<String> words = [];
+    final bool isAllCaps = text.toUpperCase() == text;
+
+    for (int i = 0; i < text.length; i++) {
+      final String char = text[i];
+      final String? nextChar = i + 1 == text.length ? null : text[i + 1];
+
+      if (symbolSet.contains(char)) {
+        continue;
+      }
+
+      sb.write(char);
+
+      final bool isEndOfWord = nextChar == null ||
+          (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
+          symbolSet.contains(nextChar);
+
+      if (isEndOfWord) {
+        words.add(sb.toString());
+        sb.clear();
+      }
+    }
+
+    return words;
+  }
+
+  /// camelCase
+  String get camelCase => _getCamelCase();
+
+  /// CONSTANT_CASE
+  String get constantCase => _getConstantCase();
+
+  /// Sentence case
+  String get sentenceCase => _getSentenceCase();
+
+  /// snake_case
+  String get snakeCase => _getSnakeCase();
+
+  /// dot.case
+  String get dotCase => _getSnakeCase(separator: '.');
+
+  /// param-case
+  String get paramCase => _getSnakeCase(separator: '-');
+
+  /// path/case
+  String get pathCase => _getSnakeCase(separator: '/');
+
+  /// PascalCase
+  String get pascalCase => _getPascalCase();
+
+  /// Header-Case
+  String get headerCase => _getPascalCase(separator: '-');
+
+  /// Title Case
+  String get titleCase => _getPascalCase(separator: ' ');
+
+  String _getCamelCase({String separator = ''}) {
+    final List<String> words = _words.map(_upperCaseFirstLetter).toList();
+    if (_words.isNotEmpty) {
+      words[0] = words[0].toLowerCase();
+    }
+
+    return words.join(separator);
+  }
+
+  String _getConstantCase({String separator = '_'}) {
+    final List<String> words =
+        _words.map((word) => word.toUpperCase()).toList();
+
+    return words.join(separator);
+  }
+
+  String _getPascalCase({String separator = ''}) {
+    final List<String> words = _words.map(_upperCaseFirstLetter).toList();
+
+    return words.join(separator);
+  }
+
+  String _getSentenceCase({String separator = ' '}) {
+    final List<String> words =
+        _words.map((word) => word.toLowerCase()).toList();
+    if (_words.isNotEmpty) {
+      words[0] = _upperCaseFirstLetter(words[0]);
+    }
+
+    return words.join(separator);
+  }
+
+  String _getSnakeCase({String separator = '_'}) {
+    final List<String> words =
+        _words.map((word) => word.toLowerCase()).toList();
+
+    return words.join(separator);
+  }
+
+  String _upperCaseFirstLetter(String word) {
+    return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
+  }
+}
+
+extension _StringReCase on String {
+  String get toCamelCase => _ReCase(this).camelCase;
+
+  String get toConstantCase => _ReCase(this).constantCase;
+
+  String get toSentenceCase => _ReCase(this).sentenceCase;
+
+  String get toSnakeCase => _ReCase(this).snakeCase;
+
+  String get toDotCase => _ReCase(this).dotCase;
+
+  String get toParamCase => _ReCase(this).paramCase;
+
+  String get toPathCase => _ReCase(this).pathCase;
+
+  String get toPascalCase => _ReCase(this).pascalCase;
+
+  String get toHeaderCase => _ReCase(this).headerCase;
+
+  String get toTitleCase => _ReCase(this).titleCase;
 }
