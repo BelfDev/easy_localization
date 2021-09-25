@@ -223,7 +223,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
 
     if (!_preservedKeywords.contains(key)) {
       if (accKey != null && !ignoreKey) {
-        final formattedAccKey = '$accKey.$key'.toCamelCase;
+        final formattedAccKey = '${accKey.toCamelCase}.$key'.toCamelCase;
 
         fileContent += '  static const $formattedAccKey = \'$accKey.$key\';\n';
       } else if (!ignoreKey) {
