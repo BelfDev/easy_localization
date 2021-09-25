@@ -214,7 +214,7 @@ String _resolve(Map<String, dynamic> translations, bool? skipUnnecessaryKeys,
 
       var nextAccKey = key;
       if (accKey != null) {
-        nextAccKey = '$accKey.$key'.toCamelCase;
+        nextAccKey = '$accKey.$key';
       }
 
       fileContent +=
