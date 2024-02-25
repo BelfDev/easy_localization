@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:easy_localization/easy_localization.dart';
 //import 'package:easy_localization_loader/easy_localization_loader.dart'; // import custom loaders
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'generated/locale_keys.g.dart';
 import 'lang_view.dart';
@@ -125,9 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FaIcon(FontAwesomeIcons.male),
                 Switch(value: _gender, onChanged: switchGender),
-                FaIcon(FontAwesomeIcons.female),
               ],
             ),
             Spacer(
